@@ -1,6 +1,6 @@
 # Search Server Logs
 
-Ssh to a service and use journalctl to search services log output that match a regex
+Ssh to a server and use journalctl and ripgrep to search services log output that match a regex
 
 # Build
 ```
