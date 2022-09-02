@@ -7,10 +7,19 @@ struct Args {
     #[clap(value_parser, help = "ssh login, account@machine")]
     acct_name: String,
 
-    #[clap(value_parser, help = "rust regex string, an empty string, \"\", matches everything")]
+    #[clap(
+        value_parser,
+        help = "rust regex string, an empty string, \"\", matches everything"
+    )]
     regex: String,
 
-    #[clap(short = 't', long, value_parser, default_value = "-1d", help = "journalctl --since parameter but use '=', Example: --since=-1h")]
+    #[clap(
+        short = 't',
+        long,
+        value_parser,
+        default_value = "-1d",
+        help = "journalctl --since parameter but use '=', Example: --since=-1h"
+    )]
     since: String,
 
     #[clap(short, long, value_parser, multiple = true, default_values = &["eth1", "beacon-chain", "validator"] )]
@@ -30,8 +39,25 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
         // Create the command
         let mut cmd = Command::new("ssh");
-        let regex = if args.regex.len() == 0 { "\"\""} else { &args.regex };
-        cmd.args([&args.acct_name, "journalctl", "-u", &srvc_str, "--since", &args.since, "|", "rg", "--color", "always", "-e", regex]);
+        let regex = if args.regex.is_empty() {
+            "\"\""
+        } else {
+            &args.regex
+        };
+        cmd.args([
+            &args.acct_name,
+            "journalctl",
+            "-u",
+            &srvc_str,
+            "--since",
+            &args.since,
+            "|",
+            "rg",
+            "--color",
+            "always",
+            "-e",
+            regex,
+        ]);
         //println!("cmd: {:#?}",cmd);
 
         // Execute the command
